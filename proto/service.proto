@@ -1,0 +1,20 @@
+syntax="proto3";
+
+service FileTransferService {
+  rpc getFileInfo(FileInfo) returns (Res) {}
+  rpc transferFile(stream FileData) returns (Res) {}
+}
+
+message FileInfo {
+  string name = 1;
+  int64 size = 2;
+  uint32 mode = 3;
+}
+
+message FileData {
+  bytes data = 1;
+}
+
+message Res {
+  string message = 1;
+}
