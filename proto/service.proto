@@ -1,8 +1,13 @@
 syntax="proto3";
 
 service FileTransferService {
+  rpc getFolderInfo(FolderInfo) returns (Res) {}
   rpc getFileInfo(FileInfo) returns (Res) {}
   rpc transferFile(stream FileData) returns (Res) {}
+}
+
+message FolderInfo {
+  string name = 1;
 }
 
 message FileInfo {
