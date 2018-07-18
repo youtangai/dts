@@ -8,13 +8,16 @@ import (
 	"google.golang.org/grpc"
 	"flag"
 	"io/ioutil"
-	//"path/filepath"
 	"os"
 	"io"
 )
 
 var (
 	client pb.FileTransferServiceClient
+)
+
+const (
+	MAX_BUFF = 16384
 )
 
 func runGetFolderInfo(folderName string) error {
@@ -36,7 +39,6 @@ func runGetFileInfo(name string, size int64, mode uint32) error {
 	defer cancel()
 	fileInfo := &pb.FileInfo{
 		Name: name,
-		Size: size,
 		Mode: mode,
 	}
 	res, err := client.GetFileInfo(ctx, fileInfo)
@@ -91,17 +93,19 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to read dir: %+V\n", err)
 	}
+	
+	err = os.Chdir(*dir)
+	if err != nil {
+		log.Fatalf("failed to change dir: %v\n", err)
+	}
+	
 	for _, file := range files {
 		runGetFileInfo(file.Name(), file.Size(), uint32(file.Mode()))
-		err = os.Chdir(*dir)
-		if err != nil {
-			log.Fatalf("failed to change dir: %v\n", err)
-		}
 		f, err := os.Open(file.Name())
 		if err != nil {
 			log.Fatalf("cannot open file: %s err: %v\n", file.Name(), err)
 		}
-		buff := make([]byte, file.Size())
+		buff := make([]byte, MAX_BUFF)
 		for {
 			count, err := f.Read(buff)
 			if err == io.EOF {
