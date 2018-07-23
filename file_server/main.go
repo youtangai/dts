@@ -43,8 +43,11 @@ func (fts *fileTransferService) TransferFile(stream pb.FileTransferService_Trans
 		log.Fatalf("cannot open file: %v\n", err)
 	}
 	defer file.Close()
+	n := 0
 	for {
 		req, err := stream.Recv()
+		log.Println("n:", n)
+		n++
 		if err == io.EOF {
 			stream.SendAndClose(&pb.Res{Message:"file read done!"})
 			return nil
@@ -52,7 +55,6 @@ func (fts *fileTransferService) TransferFile(stream pb.FileTransferService_Trans
 		if err != nil {
 			return err
 		}
-		log.Println(string(req.Data))
 		file.Write(req.Data)
 	}
 }

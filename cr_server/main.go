@@ -1,15 +1,15 @@
 package main
 
 import (
+	"flag"
 	pb "github.com/youtangai/zanshin/proto"
 	"golang.org/x/net/context"
-	"time"
-	"log"
 	"google.golang.org/grpc"
-	"flag"
-	"io/ioutil"
-	"os"
 	"io"
+	"io/ioutil"
+	"log"
+	"os"
+	"time"
 )
 
 var (
@@ -49,37 +49,52 @@ func runGetFileInfo(name string, size int64, mode uint32) error {
 	return nil
 }
 
-func runTransferFile(data []byte) error {
-	log.Println(string(data))
+func runTransferFile(file *os.File) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	stream, err := client.TransferFile(ctx)
+	buff := make([]byte, MAX_BUFF)
+	n := 0
 	for {
-		fileData := &pb.FileData {
-			Data: data,
+		log.Println("n:", n)
+		n++
+		count, err := file.Read(buff)
+		if err == io.EOF {
+			break
 		}
-		if err := stream.Send(fileData);  err != nil {
+		if err != nil {
+			log.Fatalf("failed to read: %v\n", err)
+		}
+		fileData := &pb.FileData{
+			Data: buff[:count],
+		}
+		if err := stream.Send(fileData); err != nil {
 			return err
 		}
-		break
 	}
 	res, err := stream.CloseAndRecv()
 	if err != nil {
 		return err
 	}
 	log.Printf("return message: %s\n", res.Message)
-	
+
 	return nil
-} 
+}
 
 func main() {
 	host := flag.String("host", "localhost", "server host name or ip addr")
 	port := flag.String("port", "12345", "server port number")
-	dir := flag.String("dir", ".", "transfer dir")
+	dir := flag.String("dir", "", "transfer dir")
+	containerId := flag.String("c", "", "container id")
 	flag.Parse()
+
+	//todo: container checkpoint process
+
+	log.Printf("container id : %s\n", *containerId)
+
 	log.Printf("request to %s:%s", *host, *port)
 
-	conn, err := grpc.Dial(*host + ":" + *port, grpc.WithInsecure())
+	conn, err := grpc.Dial(*host+":"+*port, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("failed to dial: %v", err)
 	}
@@ -88,33 +103,23 @@ func main() {
 	client = pb.NewFileTransferServiceClient(conn)
 
 	runGetFolderInfo(*dir)
-	
+
 	files, err := ioutil.ReadDir(*dir)
 	if err != nil {
-		log.Fatalf("failed to read dir: %+V\n", err)
+		log.Fatalf("failed to read dir: %+v\n", err)
 	}
-	
+
 	err = os.Chdir(*dir)
 	if err != nil {
 		log.Fatalf("failed to change dir: %v\n", err)
 	}
-	
+
 	for _, file := range files {
 		runGetFileInfo(file.Name(), file.Size(), uint32(file.Mode()))
 		f, err := os.Open(file.Name())
 		if err != nil {
 			log.Fatalf("cannot open file: %s err: %v\n", file.Name(), err)
 		}
-		buff := make([]byte, MAX_BUFF)
-		for {
-			count, err := f.Read(buff)
-			if err == io.EOF {
-				break
-			}
-			if err != nil {
-				log.Fatalf("failed to read: %v\n", err)
-			}
-			runTransferFile(buff[:count])
-		}
+		runTransferFile(f)
 	}
 }
