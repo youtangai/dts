@@ -1,2 +1,2 @@
-# zanshin
-これは研究で開発中の残身型マイグレーションツールである
+# fts
+this is file transfer service package
