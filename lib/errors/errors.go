@@ -52,3 +52,12 @@ func StreamRecvError(err error) error {
 func FileWriteError(err error) error {
 	return baseErrorLog("cannot write file", err)
 }
+
+func ListenError(url string, err error) error {
+	message := fmt.Sprintf("cannot listen url:%s", url)
+	return baseErrorLog(message, err)
+}
+
+func GrpcServeError(err error) error {
+	return baseErrorLog("cannot start grpc server", err)
+}

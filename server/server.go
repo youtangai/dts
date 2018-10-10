@@ -1,13 +1,16 @@
 package server
 
 import (
+	"fmt"
 	"io"
+	"net"
 	"os"
 	"path/filepath"
 
 	"github.com/youtangai/fts/lib/errors"
 	"github.com/youtangai/fts/lib/status"
 	pb "github.com/youtangai/fts/proto"
+	"google.golang.org/grpc"
 )
 
 const (
@@ -20,8 +23,14 @@ type FileTransferServer struct {
 	Dir string
 }
 
+func NewFileTransferServer(dir string) FileTransferServer {
+	return FileTransferServer{
+		Dir: dir,
+	}
+}
+
 //TransferFile is
-func (s *FileTransferServer) TransferFile(stream pb.FileTransferService_FileTransferServer) error {
+func (s *FileTransferServer) FileTransfer(stream pb.FileTransferService_FileTransferServer) error {
 	for {
 		fileData, err := stream.Recv()
 		if err == io.EOF {
@@ -46,4 +55,24 @@ func (s *FileTransferServer) TransferFile(stream pb.FileTransferService_FileTran
 			return errors.FileWriteError(err)
 		}
 	}
+}
+
+func (s FileTransferServer) Run(url, dir string) error {
+	lis, err := net.Listen("tcp", url)
+	if err != nil {
+		return errors.ListenError(url, err)
+	}
+
+	server := grpc.NewServer()
+	pb.RegisterFileTransferServiceServer(server, &s)
+
+	if err := server.Serve(lis); err != nil {
+		return errors.GrpcServeError(err)
+	}
+
+	return nil
+}
+
+func GetURL(host, port string) string {
+	return fmt.Sprintf("%s:%s", host, port)
 }
