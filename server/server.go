@@ -8,24 +8,22 @@ import (
 	"path/filepath"
 
 	"github.com/youtangai/fts/lib/errors"
+	"github.com/youtangai/fts/lib/logging"
 	"github.com/youtangai/fts/lib/status"
 	pb "github.com/youtangai/fts/proto"
 	"google.golang.org/grpc"
 )
 
-const (
-	//DefFilePerm is
-	DefFilePerm = 0755
-)
-
 //FileTransferServer is
 type FileTransferServer struct {
 	Dir string
+	URL string
 }
 
-func NewFileTransferServer(dir string) FileTransferServer {
+func NewFileTransferServer(dir, host, port string) FileTransferServer {
 	return FileTransferServer{
 		Dir: dir,
+		URL: getURL(host, port),
 	}
 }
 
@@ -43,12 +41,15 @@ func (s *FileTransferServer) FileTransfer(stream pb.FileTransferService_FileTran
 		if err != nil {
 			return errors.StreamRecvError(err)
 		}
+		logging.RecvFileData(fileData)
+
 		filePath := filepath.Join(s.Dir, fileData.Filename)
 		mode := os.FileMode(fileData.Mode)
 		file, err := os.OpenFile(filePath, os.O_CREATE|os.O_APPEND|os.O_RDONLY, mode)
 		if err != nil {
 			return errors.OpenFileError(filePath, err)
 		}
+		logging.OpenFileInfo(filePath)
 
 		_, err = file.Write(fileData.Data)
 		if err != nil {
@@ -57,7 +58,9 @@ func (s *FileTransferServer) FileTransfer(stream pb.FileTransferService_FileTran
 	}
 }
 
-func (s FileTransferServer) Run(url, dir string) error {
+func (s FileTransferServer) Run() error {
+	url := s.URL
+
 	lis, err := net.Listen("tcp", url)
 	if err != nil {
 		return errors.ListenError(url, err)
@@ -66,6 +69,7 @@ func (s FileTransferServer) Run(url, dir string) error {
 	server := grpc.NewServer()
 	pb.RegisterFileTransferServiceServer(server, &s)
 
+	logging.WillStartServerInfo(s.URL)
 	if err := server.Serve(lis); err != nil {
 		return errors.GrpcServeError(err)
 	}
@@ -73,6 +77,6 @@ func (s FileTransferServer) Run(url, dir string) error {
 	return nil
 }
 
-func GetURL(host, port string) string {
+func getURL(host, port string) string {
 	return fmt.Sprintf("%s:%s", host, port)
 }

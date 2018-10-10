@@ -6,11 +6,11 @@ import (
 )
 
 const (
-	Tag = "fts:ERROR:"
+	ErrorTag = "fts:ERROR:"
 )
 
 func baseErrorLog(message string, err error) error {
-	text := fmt.Sprint(Tag, message)
+	text := fmt.Sprint(ErrorTag, message)
 	log.Println(text)
 	return fmt.Errorf(text)
 }
@@ -60,4 +60,9 @@ func ListenError(url string, err error) error {
 
 func GrpcServeError(err error) error {
 	return baseErrorLog("cannot start grpc server", err)
+}
+
+func MkdirError(dir string, err error) error {
+	message := fmt.Sprintf("cannot create dir:%s", dir)
+	return baseErrorLog(message, err)
 }
