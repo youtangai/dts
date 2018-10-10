@@ -44,3 +44,11 @@ func StreamCloseError(err error) error {
 func StreamSendError(err error) error {
 	return baseErrorLog("cannot send filedata", err)
 }
+
+func StreamRecvError(err error) error {
+	return baseErrorLog("cannot recv filedata", err)
+}
+
+func FileWriteError(err error) error {
+	return baseErrorLog("cannot write file", err)
+}
