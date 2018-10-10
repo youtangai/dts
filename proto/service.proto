@@ -11,5 +11,5 @@ message Response {
 }
 
 service FileTransferService {
-  rpc FileTransfer(stream FileData) returns (stream Response) {}
+  rpc FileTransfer(stream FileData) returns (Response) {}
 }
