@@ -1,18 +1,19 @@
 package main
 
 import (
-	"github.com/urfave/cli"
 	"log"
-	"os"
-	"github.com/youtangai/fts/libfts"
 	"net"
-	"google.golang.org/grpc"
-	pb "github.com/youtangai/fts/proto"
+	"os"
 	"path/filepath"
+
+	"github.com/urfave/cli"
+	"github.com/youtangai/fts/libfts"
+	pb "github.com/youtangai/fts/proto"
+	"google.golang.org/grpc"
 )
 
 const (
-	//CliArg is 
+	//CliArg is
 	CliArg = 1
 	//SrvArg is
 	SrvArg = 1
@@ -21,15 +22,15 @@ const (
 func main() {
 	app := cli.NewApp()
 	app.Name = "fts"
-	app.Commands = []cli.Command {
+	app.Commands = []cli.Command{
 		{
-			Name: "cli",
-			Usage:"transfer files to fts server",
+			Name:  "cli",
+			Usage: "transfer files to fts server",
 			Flags: []cli.Flag{
-				cli.StringFlag{Name:"host", Value:"127.0.0.1", Usage:"fts server ip"},
-				cli.StringFlag{Name:"port", Value:"5050", Usage:"fts server port"},
+				cli.StringFlag{Name: "host", Value: "127.0.0.1", Usage: "fts server ip"},
+				cli.StringFlag{Name: "port", Value: "5050", Usage: "fts server port"},
 			},
-			ArgsUsage:"<dir> transfer dir path",
+			ArgsUsage: "<dir> transfer dir path",
 			Action: func(ctx *cli.Context) error {
 				//check arg num
 				if ctx.NArg() < CliArg {
@@ -41,11 +42,11 @@ func main() {
 			},
 		},
 		{
-			Name:"srv",
+			Name:  "srv",
 			Usage: "start fts server",
 			Flags: []cli.Flag{
-				cli.StringFlag{Name:"host", Value:"127.0.0.1", Usage:"fts server ip"},
-				cli.StringFlag{Name:"port", Value:"5050", Usage:"fts server port"},
+				cli.StringFlag{Name: "host", Value: "127.0.0.1", Usage: "fts server ip"},
+				cli.StringFlag{Name: "port", Value: "5050", Usage: "fts server port"},
 			},
 			ArgsUsage: "<dir> recieve path",
 			Action: func(ctx *cli.Context) error {
@@ -85,7 +86,7 @@ func main() {
 			},
 		},
 	}
-    if err := app.Run(os.Args); err != nil {
+	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
 	}
 }
