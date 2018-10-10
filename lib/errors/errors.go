@@ -7,10 +7,11 @@ import (
 
 const (
 	ErrorTag = "fts:ERROR:"
+	PanicTag = "fts:PANIC:"
 )
 
 func baseErrorLog(message string, err error) error {
-	text := fmt.Sprint(ErrorTag, message)
+	text := fmt.Sprintln(ErrorTag, message, err)
 	log.Println(text)
 	return fmt.Errorf(text)
 }
@@ -65,4 +66,12 @@ func GrpcServeError(err error) error {
 func MkdirError(dir string, err error) error {
 	message := fmt.Sprintf("cannot create dir:%s", dir)
 	return baseErrorLog(message, err)
+}
+
+func basePanicLog(err error) {
+	panic(err)
+}
+func NoMuchArgNumPanic(argNum int) {
+	err := fmt.Errorf("no much arg num:%d", argNum)
+	basePanicLog(err)
 }

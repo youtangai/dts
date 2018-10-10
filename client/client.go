@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -23,7 +24,8 @@ const (
 	MaxBuff = 4096
 )
 
-func NewClient(url, dir string) (Client, error) {
+func NewClient(dir, host, port string) (Client, error) {
+	url := fmt.Sprintf("%s:%s", host, port)
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {
 		return Client{}, errors.GrpcDialError(err)
