@@ -25,7 +25,7 @@ func execClient(ctx *cli.Context) error {
 		panic(err)
 	}
 
-	err = cli.TransferFiles()
+	err = cli.TransferDir()
 	if err != nil {
 		panic(err)
 	}

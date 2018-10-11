@@ -37,7 +37,7 @@ func NewClient(dir, host, port string) (Client, error) {
 	}, nil
 }
 
-func (c Client) TransferFiles() error {
+func (c Client) TransferDir() error {
 	files, err := c.getAllFiles()
 	if err != nil {
 		return err
