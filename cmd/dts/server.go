@@ -5,10 +5,10 @@ import (
 	"path/filepath"
 
 	"github.com/urfave/cli"
+	"github.com/youtangai/dts"
 	"github.com/youtangai/dts/lib/errors"
 	"github.com/youtangai/dts/lib/logging"
 	"github.com/youtangai/dts/lib/util"
-	"github.com/youtangai/dts/server"
 )
 
 var serverCommand = cli.Command{
@@ -39,7 +39,7 @@ func execServer(ctx *cli.Context) error {
 		return err
 	}
 
-	server := server.NewFileTransferServer(path, host, port)
+	server := dts.NewFileTransferServer(path, host, port)
 	server.Run()
 
 	return nil

@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/urfave/cli"
-	"github.com/youtangai/dts/client"
+	"github.com/youtangai/dts"
 )
 
 var clientCommand = cli.Command{
@@ -20,7 +20,7 @@ func execClient(ctx *cli.Context) error {
 	checkArg(ctx)
 	host, port, dir := getHostPortDir(ctx)
 
-	cli, err := client.NewClient(dir, host, port)
+	cli, err := dts.NewClient(dir, host, port)
 	if err != nil {
 		panic(err)
 	}
