@@ -33,7 +33,7 @@ func main() {
     dir := "work" // set dir what you want to transfer server
 
     client := dts.NewClient(dir, host, port)
-    client.TransferFiles()
+    client.TransferDir()
 }
 ```
 
