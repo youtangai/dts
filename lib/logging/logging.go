@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"log"
 
-	pb "github.com/youtangai/fts/proto"
+	pb "github.com/youtangai/dts/proto"
 )
 
 const (
-	InfoTag = "fts:INFO:"
+	InfoTag = "dts:INFO:"
 )
 
 func baseLog(message string) {

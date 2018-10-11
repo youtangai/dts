@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	ErrorTag = "fts:ERROR:"
-	PanicTag = "fts:PANIC:"
+	ErrorTag = "dts:ERROR:"
+	PanicTag = "dts:PANIC:"
 )
 
 func baseErrorLog(message string, err error) error {
@@ -17,7 +17,7 @@ func baseErrorLog(message string, err error) error {
 }
 
 func GrpcDialError(err error) error {
-	return baseErrorLog("cannnot dial fts server", err)
+	return baseErrorLog("cannnot dial dts server", err)
 }
 
 func GetFilesError(dir string, err error) error {

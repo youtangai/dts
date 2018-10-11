@@ -5,18 +5,18 @@ import (
 	"path/filepath"
 
 	"github.com/urfave/cli"
-	"github.com/youtangai/fts/lib/errors"
-	"github.com/youtangai/fts/lib/logging"
-	"github.com/youtangai/fts/lib/util"
-	"github.com/youtangai/fts/server"
+	"github.com/youtangai/dts/lib/errors"
+	"github.com/youtangai/dts/lib/logging"
+	"github.com/youtangai/dts/lib/util"
+	"github.com/youtangai/dts/server"
 )
 
 var serverCommand = cli.Command{
 	Name:  "srv",
-	Usage: "start fts server",
+	Usage: "start dts server",
 	Flags: []cli.Flag{
-		cli.StringFlag{Name: "host", Value: "127.0.0.1", Usage: "fts server ip"},
-		cli.StringFlag{Name: "port", Value: "5050", Usage: "fts server port"},
+		cli.StringFlag{Name: "host", Value: "127.0.0.1", Usage: "dts server ip"},
+		cli.StringFlag{Name: "port", Value: "5050", Usage: "dts server port"},
 	},
 	ArgsUsage: "<dir> recieve path",
 	Action:    execServer,

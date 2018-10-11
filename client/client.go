@@ -7,9 +7,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/youtangai/fts/lib/errors"
-	"github.com/youtangai/fts/lib/util"
-	pb "github.com/youtangai/fts/proto"
+	"github.com/youtangai/dts/lib/errors"
+	"github.com/youtangai/dts/lib/util"
+	pb "github.com/youtangai/dts/proto"
 	"google.golang.org/grpc"
 )
 

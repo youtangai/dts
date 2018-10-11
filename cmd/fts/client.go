@@ -2,15 +2,15 @@ package main
 
 import (
 	"github.com/urfave/cli"
-	"github.com/youtangai/fts/client"
+	"github.com/youtangai/dts/client"
 )
 
 var clientCommand = cli.Command{
 	Name:  "cli",
-	Usage: "transfer files to fts server",
+	Usage: "transfer files to dts server",
 	Flags: []cli.Flag{
-		cli.StringFlag{Name: "host", Value: "127.0.0.1", Usage: "fts server ip"},
-		cli.StringFlag{Name: "port", Value: "5050", Usage: "fts server port"},
+		cli.StringFlag{Name: "host", Value: "127.0.0.1", Usage: "dts server ip"},
+		cli.StringFlag{Name: "port", Value: "5050", Usage: "dts server port"},
 	},
 	ArgsUsage: "<dir> transfer dir path",
 	Action:    execClient,

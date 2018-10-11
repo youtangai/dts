@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/urfave/cli"
-	"github.com/youtangai/fts/lib/errors"
+	"github.com/youtangai/dts/lib/errors"
 )
 
 const (
@@ -14,7 +14,7 @@ const (
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "fts"
+	app.Name = "dts"
 	app.Commands = []cli.Command{
 		clientCommand,
 		serverCommand,
