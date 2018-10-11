@@ -11,7 +11,7 @@ const (
 )
 
 func baseErrorLog(message string, err error) error {
-	text := fmt.Sprintln(ErrorTag, message, err)
+	text := fmt.Sprint(ErrorTag, message, err)
 	log.Println(text)
 	return fmt.Errorf(text)
 }

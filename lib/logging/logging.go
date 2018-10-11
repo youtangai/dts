@@ -12,7 +12,7 @@ const (
 )
 
 func baseLog(message string) {
-	text := fmt.Sprintf("%s:%s", InfoTag, message)
+	text := fmt.Sprint(InfoTag, message)
 	log.Println(text)
 }
 
@@ -27,7 +27,7 @@ func WillStartServerInfo(url string) {
 }
 
 func OpenFileInfo(filename string) {
-	message := fmt.Sprintf("create dir:%s done", filename)
+	message := fmt.Sprintf("open file:%s done", filename)
 	baseLog(message)
 }
 

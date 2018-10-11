@@ -8,10 +8,9 @@ import (
 func IsExistDir(dir string) bool {
 	_, err := os.Stat(dir)
 	if err != nil {
-		return true
+		return false
 	}
-
-	return false
+	return true
 }
 
 func GetURL(host, port string) string {

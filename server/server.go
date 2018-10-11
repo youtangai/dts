@@ -52,7 +52,7 @@ func (s *FileTransferServer) FileTransfer(stream pb.FileTransferService_FileTran
 
 		filePath := filepath.Join(dirPath, fileData.Filename)
 		mode := os.FileMode(fileData.Mode)
-		file, err := os.OpenFile(filePath, os.O_CREATE|os.O_APPEND|os.O_RDONLY, mode)
+		file, err := os.OpenFile(filePath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, mode)
 		if err != nil {
 			return errors.OpenFileError(filePath, err)
 		}
