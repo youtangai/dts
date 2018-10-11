@@ -8,13 +8,20 @@ import (
 	"github.com/youtangai/dts/lib/errors"
 )
 
+var (
+	version = "1.0.0"
+)
+
 const (
 	ArgNum = 1
+	usage  = `dts cli|srv -host=<IPADDR> -port=<PORTNUMBER> <DIR>`
 )
 
 func main() {
 	app := cli.NewApp()
 	app.Name = "dts"
+	app.Version = version
+	app.Usage = usage
 	app.Commands = []cli.Command{
 		clientCommand,
 		serverCommand,
