@@ -2,13 +2,13 @@ package client
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 
 	"github.com/youtangai/fts/lib/errors"
+	"github.com/youtangai/fts/lib/util"
 	pb "github.com/youtangai/fts/proto"
 	"google.golang.org/grpc"
 )
@@ -25,7 +25,7 @@ const (
 )
 
 func NewClient(dir, host, port string) (Client, error) {
-	url := fmt.Sprintf("%s:%s", host, port)
+	url := util.GetURL(host, port)
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {
 		return Client{}, errors.GrpcDialError(err)
@@ -73,6 +73,7 @@ func (c Client) transferFile(fileInfo os.FileInfo) error {
 		}
 
 		fileData := pb.FileData{
+			Dir:      c.Dir,
 			Filename: fileInfo.Name(),
 			Mode:     int32(fileInfo.Mode()),
 			Data:     buff[:count],

@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"io"
 	"net"
 	"os"
@@ -10,6 +9,7 @@ import (
 	"github.com/youtangai/fts/lib/errors"
 	"github.com/youtangai/fts/lib/logging"
 	"github.com/youtangai/fts/lib/status"
+	"github.com/youtangai/fts/lib/util"
 	pb "github.com/youtangai/fts/proto"
 	"google.golang.org/grpc"
 )
@@ -23,7 +23,7 @@ type FileTransferServer struct {
 func NewFileTransferServer(dir, host, port string) FileTransferServer {
 	return FileTransferServer{
 		Dir: dir,
-		URL: getURL(host, port),
+		URL: util.GetURL(host, port),
 	}
 }
 
@@ -43,7 +43,14 @@ func (s *FileTransferServer) FileTransfer(stream pb.FileTransferService_FileTran
 		}
 		logging.RecvFileData(fileData)
 
-		filePath := filepath.Join(s.Dir, fileData.Filename)
+		dirPath := filepath.Join(s.Dir, fileData.Dir)
+		if !util.IsExistDir(dirPath) {
+			if err = os.Mkdir(dirPath, 0755); err != nil {
+				return errors.MkdirError(dirPath, err)
+			}
+		}
+
+		filePath := filepath.Join(dirPath, fileData.Filename)
 		mode := os.FileMode(fileData.Mode)
 		file, err := os.OpenFile(filePath, os.O_CREATE|os.O_APPEND|os.O_RDONLY, mode)
 		if err != nil {
@@ -75,8 +82,4 @@ func (s FileTransferServer) Run() error {
 	}
 
 	return nil
-}
-
-func getURL(host, port string) string {
-	return fmt.Sprintf("%s:%s", host, port)
 }
