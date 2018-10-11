@@ -1,9 +1,10 @@
 syntax="proto3";
 
 message FileData {
-  string filename = 1;
-  int32 mode = 2;
-  bytes data = 3;
+  string dir = 1;
+  string filename = 2;
+  int32 mode = 3;
+  bytes data = 4;
 }
 
 message Response {
