@@ -14,7 +14,10 @@ func main() {
     port := "5050" // set port number
     dir := "/tmp" // set working dir name. 
     server := dts.NewFileTransferServer(dir, host, port)
-    server.Run()
+    err := server.Run()
+    if err != nil {
+        panic(err)
+    }
 }
 ```
 
@@ -32,8 +35,14 @@ func main() {
     port := "5050" // set server port number
     dir := "work" // set dir what you want to transfer server
 
-    client := dts.NewClient(dir, host, port)
-    client.TransferDir()
+    client, err := dts.NewClient(dir, host, port)
+    if err != nil {
+        panic(err)
+    }
+    err = client.TransferDir()
+    if err != nil {
+        panic(err)
+    }
 }
 ```
 
